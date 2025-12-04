@@ -16,9 +16,15 @@ import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "loads")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Load {
 
     @Id
@@ -67,146 +73,5 @@ public class Load {
 
     @OneToMany(mappedBy = "load", fetch = FetchType.LAZY)
     private List<Booking> bookings;
-
-    public Load() {
-    }
-
-    public Load(UUID id, long version, String pickupLocation, String deliveryLocation, BigDecimal weight, String cargoType, LocalDateTime pickupDate, LocalDateTime deliveryDate, BigDecimal offeredPrice, Integer trucksRequired, Integer remainingTrucks, BookingStatus status, LocalDateTime datePosted, List<Bid> bids, List<Booking> bookings) {
-        this.id = id;
-        this.version = version;
-        this.pickupLocation = pickupLocation;
-        this.deliveryLocation = deliveryLocation;
-        this.weight = weight;
-        this.cargoType = cargoType;
-        this.pickupDate = pickupDate;
-        this.deliveryDate = deliveryDate;
-        this.offeredPrice = offeredPrice;
-        this.trucksRequired = trucksRequired;
-        this.remainingTrucks = remainingTrucks;
-        this.status = status;
-        this.datePosted = datePosted;
-        this.bids = bids;
-        this.bookings = bookings;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public long getVersion() {
-        return version;
-    }
-
-    public void setVersion(long version) {
-        this.version = version;
-    }
-
-    public String getPickupLocation() {
-        return pickupLocation;
-    }
-
-    public void setPickupLocation(String pickupLocation) {
-        this.pickupLocation = pickupLocation;
-    }
-
-    public String getDeliveryLocation() {
-        return deliveryLocation;
-    }
-
-    public void setDeliveryLocation(String deliveryLocation) {
-        this.deliveryLocation = deliveryLocation;
-    }
-
-    public BigDecimal getWeight() {
-        return weight;
-    }
-
-    public void setWeight(BigDecimal weight) {
-        this.weight = weight;
-    }
-
-    public String getCargoType() {
-        return cargoType;
-    }
-
-    public void setCargoType(String cargoType) {
-        this.cargoType = cargoType;
-    }
-
-    public LocalDateTime getPickupDate() {
-        return pickupDate;
-    }
-
-    public void setPickupDate(LocalDateTime pickupDate) {
-        this.pickupDate = pickupDate;
-    }
-
-    public LocalDateTime getDeliveryDate() {
-        return deliveryDate;
-    }
-
-    public void setDeliveryDate(LocalDateTime deliveryDate) {
-        this.deliveryDate = deliveryDate;
-    }
-
-    public BigDecimal getOfferedPrice() {
-        return offeredPrice;
-    }
-
-    public void setOfferedPrice(BigDecimal offeredPrice) {
-        this.offeredPrice = offeredPrice;
-    }
-
-    public Integer getTrucksRequired() {
-        return trucksRequired;
-    }
-
-    public void setTrucksRequired(Integer trucksRequired) {
-        this.trucksRequired = trucksRequired;
-    }
-
-    public Integer getRemainingTrucks() {
-        return remainingTrucks;
-    }
-
-    public void setRemainingTrucks(Integer remainingTrucks) {
-        this.remainingTrucks = remainingTrucks;
-    }
-
-    public BookingStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(BookingStatus status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getDatePosted() {
-        return datePosted;
-    }
-
-    public void setDatePosted(LocalDateTime datePosted) {
-        this.datePosted = datePosted;
-    }
-
-    public List<Bid> getBids() {
-        return bids;
-    }
-
-    public void setBids(List<Bid> bids) {
-        this.bids = bids;
-    }
-
-    public List<Booking> getBookings() {
-        return bookings;
-    }
-
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
-    }
 }
 

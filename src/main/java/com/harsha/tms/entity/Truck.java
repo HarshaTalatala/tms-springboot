@@ -1,10 +1,24 @@
 package com.harsha.tms.entity;
 
-import jakarta.persistence.*;
 import java.util.UUID;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "trucks")
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Truck {
 
     @Id
@@ -18,47 +32,5 @@ public class Truck {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "transporter_id")
     private Transporter transporter;
-
-    public Truck() {
-    }
-
-    public Truck(UUID id, String truckType, Integer count, Transporter transporter) {
-        this.id = id;
-        this.truckType = truckType;
-        this.count = count;
-        this.transporter = transporter;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getTruckType() {
-        return truckType;
-    }
-
-    public void setTruckType(String truckType) {
-        this.truckType = truckType;
-    }
-
-    public Integer getCount() {
-        return count;
-    }
-
-    public void setCount(Integer count) {
-        this.count = count;
-    }
-
-    public Transporter getTransporter() {
-        return transporter;
-    }
-
-    public void setTransporter(Transporter transporter) {
-        this.transporter = transporter;
-    }
 }
 
