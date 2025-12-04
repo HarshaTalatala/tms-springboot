@@ -39,9 +39,11 @@ public class LoadServiceImpl implements com.harsha.tms.service.LoadService {
     @Transactional
     public LoadResponseDTO createLoad(LoadRequestDTO request) {
         Load load = new Load();
+        load.setShipperId(request.shipperId());
         load.setPickupLocation(request.pickupLocation());
         load.setDeliveryLocation(request.deliveryLocation());
         load.setWeight(request.weight());
+        load.setWeightUnit(request.weightUnit());
         load.setCargoType(request.cargoType());
         load.setPickupDate(request.pickupDate());
         load.setDeliveryDate(request.deliveryDate());
@@ -55,9 +57,11 @@ public class LoadServiceImpl implements com.harsha.tms.service.LoadService {
         
         return new LoadResponseDTO(
                 savedLoad.getId(),
+                savedLoad.getShipperId(),
                 savedLoad.getPickupLocation(),
                 savedLoad.getDeliveryLocation(),
                 savedLoad.getWeight(),
+                savedLoad.getWeightUnit(),
                 savedLoad.getCargoType(),
                 savedLoad.getPickupDate(),
                 savedLoad.getDeliveryDate(),
@@ -77,9 +81,11 @@ public class LoadServiceImpl implements com.harsha.tms.service.LoadService {
         
         return new LoadResponseDTO(
                 load.getId(),
+                load.getShipperId(),
                 load.getPickupLocation(),
                 load.getDeliveryLocation(),
                 load.getWeight(),
+                load.getWeightUnit(),
                 load.getCargoType(),
                 load.getPickupDate(),
                 load.getDeliveryDate(),
@@ -93,23 +99,30 @@ public class LoadServiceImpl implements com.harsha.tms.service.LoadService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<LoadResponseDTO> listLoads(Pageable pageable) {
-        Page<Load> page = loadRepository.findAll(pageable);
+    public Page<LoadResponseDTO> listLoads(java.util.UUID shipperId, BookingStatus status, Pageable pageable) {
+        List<Load> loads;
         
-        return page.map(load -> new LoadResponseDTO(
-                load.getId(),
-                load.getPickupLocation(),
-                load.getDeliveryLocation(),
-                load.getWeight(),
-                load.getCargoType(),
-                load.getPickupDate(),
-                load.getDeliveryDate(),
-                load.getOfferedPrice(),
-                load.getTrucksRequired(),
-                load.getRemainingTrucks(),
-                load.getStatus(),
-                load.getDatePosted()
-        ));
+        if (shipperId != null && status != null) {
+            loads = loadRepository.findByShipperIdAndStatus(shipperId, status);
+        } else if (shipperId != null) {
+            loads = loadRepository.findByShipperId(shipperId);
+        } else if (status != null) {
+            loads = loadRepository.findByStatus(status);
+        } else {
+            return loadRepository.findAll(pageable).map(this::toLoadResponseDTO);
+        }
+        
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), loads.size());
+        List<LoadResponseDTO> pageContent = loads.subList(start, end).stream()
+                .map(this::toLoadResponseDTO)
+                .toList();
+        
+        return new org.springframework.data.domain.PageImpl<>(
+                pageContent,
+                pageable,
+                loads.size()
+        );
     }
 
     @Override
@@ -125,9 +138,11 @@ public class LoadServiceImpl implements com.harsha.tms.service.LoadService {
         
         return new LoadResponseDTO(
                 savedLoad.getId(),
+                savedLoad.getShipperId(),
                 savedLoad.getPickupLocation(),
                 savedLoad.getDeliveryLocation(),
                 savedLoad.getWeight(),
+                savedLoad.getWeightUnit(),
                 savedLoad.getCargoType(),
                 savedLoad.getPickupDate(),
                 savedLoad.getDeliveryDate(),
@@ -145,7 +160,7 @@ public class LoadServiceImpl implements com.harsha.tms.service.LoadService {
         loadRepository.findById(loadId)
                 .orElseThrow(() -> new ResourceNotFoundException("Load not found with id: " + loadId));
         
-        List<Bid> bids = bidRepository.findByLoadId(loadId);
+        List<Bid> bids = bidRepository.findByLoad_Id(loadId);
         
         return bids.stream()
                 .map(bid -> {
@@ -169,6 +184,25 @@ public class LoadServiceImpl implements com.harsha.tms.service.LoadService {
                         bidWithScore.bid().getSubmittedAt()
                 ))
                 .toList();
+    }
+    
+    private LoadResponseDTO toLoadResponseDTO(Load load) {
+        return new LoadResponseDTO(
+                load.getId(),
+                load.getShipperId(),
+                load.getPickupLocation(),
+                load.getDeliveryLocation(),
+                load.getWeight(),
+                load.getWeightUnit(),
+                load.getCargoType(),
+                load.getPickupDate(),
+                load.getDeliveryDate(),
+                load.getOfferedPrice(),
+                load.getTrucksRequired(),
+                load.getRemainingTrucks(),
+                load.getStatus(),
+                load.getDatePosted()
+        );
     }
     
     private record BidWithScore(Bid bid, double score) {}

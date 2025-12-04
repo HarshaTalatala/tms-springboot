@@ -1,16 +1,20 @@
 package com.harsha.tms.exception.handler;
 
+import java.time.Instant;
+import java.util.stream.Collectors;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
 import com.harsha.tms.exception.InsufficientCapacityException;
 import com.harsha.tms.exception.InvalidStatusTransitionException;
 import com.harsha.tms.exception.LoadAlreadyBookedException;
 import com.harsha.tms.exception.ResourceNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import java.time.Instant;
+import jakarta.servlet.http.HttpServletRequest;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -37,6 +41,27 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleLoadAlreadyBooked(LoadAlreadyBookedException ex,
                                                                  HttpServletRequest request) {
         return buildResponseEntity(ex, request, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
+                                                                      HttpServletRequest request) {
+        String message = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> error.getField() + ": " + error.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+        
+        ErrorResponse body = new ErrorResponse(
+                Instant.now().toString(),
+                "Validation failed: " + message,
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(body, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalState(IllegalStateException ex,
+                                                           HttpServletRequest request) {
+        return buildResponseEntity(ex, request, HttpStatus.BAD_REQUEST);
     }
 
     private ResponseEntity<ErrorResponse> buildResponseEntity(Exception ex,

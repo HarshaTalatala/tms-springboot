@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import com.harsha.tms.dto.request.LoadRequestDTO;
 import com.harsha.tms.dto.response.BidResponseDTO;
 import com.harsha.tms.dto.response.LoadResponseDTO;
+import com.harsha.tms.entity.BookingStatus;
 
 public interface LoadService {
 
@@ -16,7 +17,7 @@ public interface LoadService {
 
     LoadResponseDTO getLoadById(UUID loadId);
 
-    Page<LoadResponseDTO> listLoads(Pageable pageable /*, optional filter params when defined */);
+    Page<LoadResponseDTO> listLoads(UUID shipperId, BookingStatus status, Pageable pageable);
 
     LoadResponseDTO cancelLoad(UUID loadId);
 

@@ -1,24 +1,14 @@
 package com.harsha.tms.repository;
 
-import com.harsha.tms.entity.Booking;
-import com.harsha.tms.entity.BookingStatus;
+import java.util.UUID;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import com.harsha.tms.entity.Booking;
 
 @Repository
 public interface BookingRepository extends JpaRepository<Booking, UUID> {
-
-    List<Booking> findByLoadId(UUID loadId);
-
-    List<Booking> findByTransporterId(UUID transporterId);
-
-    Optional<Booking> findByBidId(UUID bidId);
-
-    List<Booking> findByStatus(BookingStatus status);
-
 }
+
 

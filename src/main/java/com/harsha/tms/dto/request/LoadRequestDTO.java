@@ -2,6 +2,9 @@ package com.harsha.tms.dto.request;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.UUID;
+
+import com.harsha.tms.entity.WeightUnit;
 
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.Min;
@@ -10,6 +13,9 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
 public record LoadRequestDTO(
+        @NotNull(message = "Shipper ID is required")
+        UUID shipperId,
+        
         @NotBlank(message = "Pickup location is required")
         String pickupLocation,
         
@@ -19,6 +25,9 @@ public record LoadRequestDTO(
         @NotNull(message = "Weight is required")
         @Positive(message = "Weight must be positive")
         BigDecimal weight,
+        
+        @NotNull(message = "Weight unit is required")
+        WeightUnit weightUnit,
         
         @NotBlank(message = "Cargo type is required")
         String cargoType,

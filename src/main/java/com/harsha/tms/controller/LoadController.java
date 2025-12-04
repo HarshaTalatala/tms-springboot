@@ -13,12 +13,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.harsha.tms.dto.request.LoadRequestDTO;
 import com.harsha.tms.dto.response.BidResponseDTO;
 import com.harsha.tms.dto.response.LoadResponseDTO;
+import com.harsha.tms.entity.BookingStatus;
 import com.harsha.tms.service.LoadService;
+
 import jakarta.validation.Valid;
 
 @RestController
@@ -38,8 +41,11 @@ public class LoadController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<LoadResponseDTO>> listLoads(Pageable pageable) {
-        Page<LoadResponseDTO> response = loadService.listLoads(pageable);
+    public ResponseEntity<Page<LoadResponseDTO>> listLoads(
+            @RequestParam(required = false) UUID shipperId,
+            @RequestParam(required = false) BookingStatus status,
+            Pageable pageable) {
+        Page<LoadResponseDTO> response = loadService.listLoads(shipperId, status, pageable);
         return ResponseEntity.ok(response);
     }
 

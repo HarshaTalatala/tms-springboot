@@ -64,7 +64,7 @@ public class BookingServiceImpl implements BookingService {
                     .orElseThrow(() -> new ResourceNotFoundException("Transporter not found with id: " + request.transporterId()));
 
             // Validate single-ACCEPTED-bid-per-load rule
-            List<Bid> acceptedBids = bidRepository.findByLoadId(request.loadId()).stream()
+            List<Bid> acceptedBids = bidRepository.findByLoad_Id(request.loadId()).stream()
                     .filter(b -> b.getStatus() == BidStatus.ACCEPTED)
                     .toList();
             if (!acceptedBids.isEmpty()) {

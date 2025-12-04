@@ -55,5 +55,18 @@ public class Booking {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bid_id", nullable = false)
     private Bid bid;
+
+    // Convenience methods to get IDs from relationships
+    public UUID getLoadId() {
+        return load != null ? load.getId() : null;
+    }
+
+    public UUID getBidId() {
+        return bid != null ? bid.getBidId() : null;
+    }
+
+    public UUID getTransporterId() {
+        return transporter != null ? transporter.getTransporterId() : null;
+    }
 }
 

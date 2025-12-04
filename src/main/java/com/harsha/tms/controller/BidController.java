@@ -11,11 +11,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.harsha.tms.dto.request.BidRequestDTO;
 import com.harsha.tms.dto.response.BidResponseDTO;
+import com.harsha.tms.entity.BidStatus;
 import com.harsha.tms.service.BidService;
+
 import jakarta.validation.Valid;
 
 @RestController
@@ -35,8 +38,11 @@ public class BidController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BidResponseDTO>> listBids() {
-        List<BidResponseDTO> response = bidService.listBids();
+    public ResponseEntity<List<BidResponseDTO>> listBids(
+            @RequestParam(required = false) UUID loadId,
+            @RequestParam(required = false) UUID transporterId,
+            @RequestParam(required = false) BidStatus status) {
+        List<BidResponseDTO> response = bidService.listBids(loadId, transporterId, status);
         return ResponseEntity.ok(response);
     }
 

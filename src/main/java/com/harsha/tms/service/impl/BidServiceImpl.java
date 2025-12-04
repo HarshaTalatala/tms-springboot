@@ -68,11 +68,17 @@ public class BidServiceImpl implements BidService {
         }
 
         if (load.getStatus() == BookingStatus.POSTED) {
-            List<Bid> existingBids = bidRepository.findByLoadId(request.loadId());
+            List<Bid> existingBids = bidRepository.findByLoad_Id(request.loadId());
             if (existingBids.isEmpty()) {
                 load.setStatus(BookingStatus.OPEN_FOR_BIDS);
                 loadRepository.save(load);
             }
+        }
+        
+        // Check for existing ACCEPTED bid
+        List<Bid> acceptedBids = bidRepository.findByLoad_IdAndStatus(request.loadId(), BidStatus.ACCEPTED);
+        if (!acceptedBids.isEmpty()) {
+            throw new IllegalStateException("Cannot submit bid: Load already has an accepted bid");
         }
 
         Bid bid = new Bid();
@@ -100,8 +106,26 @@ public class BidServiceImpl implements BidService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BidResponseDTO> listBids() {
-        List<Bid> bids = bidRepository.findAll();
+    public List<BidResponseDTO> listBids(UUID loadId, UUID transporterId, BidStatus status) {
+        List<Bid> bids;
+        
+        if (loadId != null && transporterId != null && status != null) {
+            bids = bidRepository.findByLoad_IdAndTransporter_TransporterIdAndStatus(loadId, transporterId, status);
+        } else if (loadId != null && transporterId != null) {
+            bids = bidRepository.findByLoad_IdAndTransporter_TransporterId(loadId, transporterId);
+        } else if (loadId != null && status != null) {
+            bids = bidRepository.findByLoad_IdAndStatus(loadId, status);
+        } else if (transporterId != null && status != null) {
+            bids = bidRepository.findByTransporter_TransporterIdAndStatus(transporterId, status);
+        } else if (loadId != null) {
+            bids = bidRepository.findByLoad_Id(loadId);
+        } else if (transporterId != null) {
+            bids = bidRepository.findByTransporter_TransporterId(transporterId);
+        } else if (status != null) {
+            bids = bidRepository.findByStatus(status);
+        } else {
+            bids = bidRepository.findAll();
+        }
 
         return bids.stream()
                 .map(bid -> new BidResponseDTO(

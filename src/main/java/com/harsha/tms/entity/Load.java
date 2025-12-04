@@ -25,7 +25,8 @@ import lombok.ToString;
 
 @Entity
 @Table(name = "loads", indexes = {
-    @Index(name = "idx_load_status", columnList = "status")
+    @Index(name = "idx_load_status", columnList = "status"),
+    @Index(name = "idx_load_shipper_id", columnList = "shipperId")
 })
 @Getter
 @Setter
@@ -48,7 +49,14 @@ public class Load {
     private String deliveryLocation;
 
     @Column(nullable = false)
+    private UUID shipperId;
+
+    @Column(nullable = false)
     private BigDecimal weight;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private WeightUnit weightUnit;
 
     @Column(nullable = false)
     private String cargoType;
