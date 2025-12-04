@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.harsha.tms.dto.request.BidRequestDTO;
 import com.harsha.tms.dto.response.BidResponseDTO;
 import com.harsha.tms.service.BidService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/bid")
@@ -28,7 +29,7 @@ public class BidController {
     }
 
     @PostMapping
-    public ResponseEntity<BidResponseDTO> submitBid(@RequestBody BidRequestDTO request) {
+    public ResponseEntity<BidResponseDTO> submitBid(@Valid @RequestBody BidRequestDTO request) {
         BidResponseDTO response = bidService.submitBid(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

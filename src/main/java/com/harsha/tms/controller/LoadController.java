@@ -19,6 +19,7 @@ import com.harsha.tms.dto.request.LoadRequestDTO;
 import com.harsha.tms.dto.response.BidResponseDTO;
 import com.harsha.tms.dto.response.LoadResponseDTO;
 import com.harsha.tms.service.LoadService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/load")
@@ -31,7 +32,7 @@ public class LoadController {
     }
 
     @PostMapping
-    public ResponseEntity<LoadResponseDTO> createLoad(@RequestBody LoadRequestDTO request) {
+    public ResponseEntity<LoadResponseDTO> createLoad(@Valid @RequestBody LoadRequestDTO request) {
         LoadResponseDTO response = loadService.createLoad(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

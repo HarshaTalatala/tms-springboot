@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.harsha.tms.dto.request.BookingRequestDTO;
 import com.harsha.tms.dto.response.BookingResponseDTO;
 import com.harsha.tms.service.BookingService;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/booking")
@@ -27,7 +28,7 @@ public class BookingController {
     }
 
     @PostMapping
-    public ResponseEntity<BookingResponseDTO> createBooking(@RequestBody BookingRequestDTO request) {
+    public ResponseEntity<BookingResponseDTO> createBooking(@Valid @RequestBody BookingRequestDTO request) {
         BookingResponseDTO response = bookingService.createBooking(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
